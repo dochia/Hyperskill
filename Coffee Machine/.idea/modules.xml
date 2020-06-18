@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Coffee_Machine.iml" filepath="$PROJECT_DIR$/.idea/modules/Coffee_Machine.iml" group="Coffee_Machine" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Coffee Machine/task/Coffee_Machine-task.iml" filepath="$PROJECT_DIR$/.idea/modules/Coffee Machine/task/Coffee_Machine-task.iml" group="Coffee_Machine/Coffee_Machine-task" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Coffee Machine/task/Coffee_Machine-task_main.iml" filepath="$PROJECT_DIR$/.idea/modules/Coffee Machine/task/Coffee_Machine-task_main.iml" group="Coffee_Machine/Coffee_Machine-task" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Coffee Machine/task/Coffee_Machine-task_test.iml" filepath="$PROJECT_DIR$/.idea/modules/Coffee Machine/task/Coffee_Machine-task_test.iml" group="Coffee_Machine/Coffee_Machine-task" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Problems/Right Rotation/Problems-Right_Rotation.iml" filepath="$PROJECT_DIR$/.idea/modules/Problems/Right Rotation/Problems-Right_Rotation.iml" group="Coffee_Machine/Problems-Right_Rotation" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Problems/Right Rotation/Problems-Right_Rotation_main.iml" filepath="$PROJECT_DIR$/.idea/modules/Problems/Right Rotation/Problems-Right_Rotation_main.iml" group="Coffee_Machine/Problems-Right_Rotation" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Problems/Right Rotation/Problems-Right_Rotation_test.iml" filepath="$PROJECT_DIR$/.idea/modules/Problems/Right Rotation/Problems-Right_Rotation_test.iml" group="Coffee_Machine/Problems-Right_Rotation" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Problems/The longest ascending sequence/Problems-The_longest_ascending_sequence.iml" filepath="$PROJECT_DIR$/.idea/modules/Problems/The longest ascending sequence/Problems-The_longest_ascending_sequence.iml" group="Coffee_Machine/Problems-The_longest_ascending_sequence" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Problems/The longest ascending sequence/Problems-The_longest_ascending_sequence_main.iml" filepath="$PROJECT_DIR$/.idea/modules/Problems/The longest ascending sequence/Problems-The_longest_ascending_sequence_main.iml" group="Coffee_Machine/Problems-The_longest_ascending_sequence" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Problems/The longest ascending sequence/Problems-The_longest_ascending_sequence_test.iml" filepath="$PROJECT_DIR$/.idea/modules/Problems/The longest ascending sequence/Problems-The_longest_ascending_sequence_test.iml" group="Coffee_Machine/Problems-The_longest_ascending_sequence" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Problems/The secret enumeration/Problems-The_secret_enumeration.iml" filepath="$PROJECT_DIR$/.idea/modules/Problems/The secret enumeration/Problems-The_secret_enumeration.iml" group="Coffee_Machine/Problems-The_secret_enumeration" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Problems/The secret enumeration/Problems-The_secret_enumeration_main.iml" filepath="$PROJECT_DIR$/.idea/modules/Problems/The secret enumeration/Problems-The_secret_enumeration_main.iml" group="Coffee_Machine/Problems-The_secret_enumeration" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Problems/The secret enumeration/Problems-The_secret_enumeration_test.iml" filepath="$PROJECT_DIR$/.idea/modules/Problems/The secret enumeration/Problems-The_secret_enumeration_test.iml" group="Coffee_Machine/Problems-The_secret_enumeration" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/util/util.iml" filepath="$PROJECT_DIR$/.idea/modules/util/util.iml" group="Coffee_Machine/util" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/util/util_main.iml" filepath="$PROJECT_DIR$/.idea/modules/util/util_main.iml" group="Coffee_Machine/util" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/util/util_test.iml" filepath="$PROJECT_DIR$/.idea/modules/util/util_test.iml" group="Coffee_Machine/util" />
+    </modules>
+  </component>
+</project>
