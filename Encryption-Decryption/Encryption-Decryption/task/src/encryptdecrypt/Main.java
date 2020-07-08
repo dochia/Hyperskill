@@ -150,78 +150,49 @@ class UnicodeAlgorithm extends Algorithm {
     }
 }
 
-class Factory {
-    Map<String, String> args;
-    Algorithm alg;
-    void parseArguments(String[] arguments) {
-        args = new HashMap<>();
-        String param;
-        String value;
-        for (int i = 0; i < arguments.length - 1; i += 2) {
-            param = arguments[i].substring(1);
-            value = arguments[i + 1];
-            args.put(param, value);
-        }
-        if (!args.containsKey("mode")) {
-            args.put("mode", "enc");
-        }
-        if (!args.containsKey("key")) {
-            args.put("key", "0");
-        }
-        if (!args.containsKey("data")) {
-            args.put("data", "");
-        }
-        if (!args.containsKey("in")) {
-            args.put("in", "");
-        }
-        if (!args.containsKey("out")) {
-            args.put("out", "");
-        }
-        if (!args.containsKey("alg")) {
-            args.put("alg", "shift");
-        }
-    }
-    void createAlgorithm() {
-        Input in;
-        Output out;
-        int key = Integer.parseInt(args.get("key"));
+class AlgorithmFactory {
+    Input in;
+    Output out;
+    int key;
+
+    Algorithm createAlgorithm(Map<String, String> args) {
+        key = Integer.parseInt(args.get("key"));
         if (!args.get("in").isEmpty()) {
             in = new DataFromFile(args.get("in"));
             if (!args.get("out").isEmpty()) {
                 out = new DataToFile(args.get("out"));
                 if (args.get("alg").equals("shift")) {
-                    alg = new ShiftAlgorithm(in, key, out);
-                } else {
-                    alg = new UnicodeAlgorithm(in, key, out);
+                    return new ShiftAlgorithm(in, key, out);
                 }
-            } else {
-                out = new DataToLine();
-                if (args.get("alg").equals("shift")) {
-                    alg = new ShiftAlgorithm(in, key, out);
-                } else {
-                    alg = new UnicodeAlgorithm(in, key, out);
-                }
+                return new UnicodeAlgorithm(in, key, out);
             }
-        } else {
-            in = new DataFromLine(args.get("in"));
-            if (!args.get("out").isEmpty()) {
-                out = new DataToFile(args.get("out"));
-                if (args.get("alg").equals("shift")) {
-                    alg = new ShiftAlgorithm(in, key, out);
-                } else {
-                    alg = new UnicodeAlgorithm(in, key, out);
-                }
-            } else {
-                out = new DataToLine();
-                if (args.get("alg").equals("shift")) {
-                    alg = new ShiftAlgorithm(in, key, out);
-                } else {
-                    alg = new UnicodeAlgorithm(in, key, out);
-                }
+            out = new DataToLine();
+            if (args.get("alg").equals("shift")) {
+                return new ShiftAlgorithm(in, key, out);
             }
+            return new UnicodeAlgorithm(in, key, out);
         }
+
+        in = new DataFromLine(args.get("in"));
+        if (!args.get("out").isEmpty()) {
+            out = new DataToFile(args.get("out"));
+            if (args.get("alg").equals("shift")) {
+                return new ShiftAlgorithm(in, key, out);
+            }
+            return new UnicodeAlgorithm(in, key, out);
+        }
+
+        out = new DataToLine();
+        if (args.get("alg").equals("shift")) {
+            return new ShiftAlgorithm(in, key, out);
+        }
+        return new UnicodeAlgorithm(in, key, out);
     }
-    void executeAlgorithm() {
+}
+
+abstract class Execute {
+
+    static void executeAlgorithm(Map<String, String> args, Algorithm alg) {
         if (args.get("mode").equals("enc")) {
             alg.encode();
         } else {
@@ -231,11 +202,40 @@ class Factory {
 }
 
 public class Main {
+    static Map<String, String> parseArguments(String[] args) {
+        Map<String, String> result = new HashMap<>();
+        String param;
+        String value;
+        for (int i = 0; i < args.length - 1; i += 2) {
+            param = args[i].substring(1);
+            value = args[i + 1];
+            result.put(param, value);
+        }
+        if (!result.containsKey("mode")) {
+            result.put("mode", "enc");
+        }
+        if (!result.containsKey("key")) {
+            result.put("key", "0");
+        }
+        if (!result.containsKey("data")) {
+            result.put("data", "");
+        }
+        if (!result.containsKey("in")) {
+            result.put("in", "");
+        }
+        if (!result.containsKey("out")) {
+            result.put("out", "");
+        }
+        if (!result.containsKey("alg")) {
+            result.put("alg", "shift");
+        }
+        return result;
+    }
     static void stage6(String[] pairs) {
-        Factory factory = new Factory();
-        factory.parseArguments(pairs);
-        factory.createAlgorithm();
-        factory.executeAlgorithm();
+        AlgorithmFactory factory = new AlgorithmFactory();
+        Map<String, String> params = parseArguments(pairs);
+        Algorithm alg = factory.createAlgorithm(params);
+        Execute.executeAlgorithm(params, alg);
     }
     public static void main(String[] args) {
         stage6(args);
