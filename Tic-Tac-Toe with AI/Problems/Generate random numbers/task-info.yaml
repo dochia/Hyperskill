@@ -13,5 +13,9 @@ files:
     }
   learner_created: false
 feedback_link: https://hyperskill.org/learn/step/4939
-status: Unchecked
+status: Solved
+feedback:
+  message: <html>Correct solution<br/><br/>Continue on <a href="https://hyperskill.org/learn/step/4939">JetBrains
+    Academy</a></html>
+  time: Sat, 12 Sep 2020 17:08:46 UTC
 record: -1

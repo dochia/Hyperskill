@@ -1,7 +1,8 @@
 package tictactoe;
 
-import java.io.InputStream;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 class Coordinates {
     int x, y;
@@ -24,14 +25,11 @@ class TicTacToeField {
     char[] field;
 
     TicTacToeField(char[] values) {
-        field = Arrays.copyOf(values, values.length);
-    }
 
-    TicTacToeField(InputStream is) {
-        Scanner sc = new Scanner(is);
-        System.out.print("Enter cells: ");
-        char[] values = sc.nextLine().trim().toCharArray();
         field = Arrays.copyOf(values, values.length);
+        if (isImpossible()) {
+            System.exit(10);
+        }
     }
 
     TicTacToeField() {
@@ -73,10 +71,11 @@ class TicTacToeField {
         return Math.abs(countX - countO) > 1;
     }
 
-    protected boolean isFinished() {
+    protected boolean isFinished(boolean printFlag) {
         for (char c : field) {
             if (c == '_') {
-                System.out.println("Game not finished");
+                if (printFlag)
+                    System.out.println("Game not finished");
                 return false;
             }
         }
@@ -98,31 +97,34 @@ class TicTacToeField {
                 (field[2] == field[4] && field[2] == field[6] && field[2] == currentUser);
     }
 
-    protected boolean isDraw() {
+    protected boolean isDraw(boolean printFlag) {
         int countX = 0;
         int countO = 0;
         for (char c : field) {
             countO += c == 'O' ? 1 : 0;
             countX += c == 'X' ? 1 : 0;
         }
-        if (isFinished() && countX - 1 == countO) {
-            System.out.println("Draw");
+        if (isFinished(printFlag) && countX - 1 == countO) {
+            if (printFlag)
+                System.out.println("Draw");
             return true;
         } else {
             return false;
         }
     }
 
-    protected boolean hasEnded() {
+    protected boolean hasEnded(boolean printFlag) {
         if (wins('X')) {
-            System.out.println("X wins");
+            if (printFlag)
+                System.out.println("X wins");
             return true;
         }
         if (wins('O')) {
-            System.out.println("O wins");
+            if (printFlag)
+                System.out.println("O wins");
             return true;
         }
-        return isDraw();
+        return isDraw(printFlag);
     }
 
     protected boolean isXYAvailable(int x, int y) {
@@ -133,8 +135,19 @@ class TicTacToeField {
         field[xy.getX() * 3 + xy.getY()] = value;
     }
 
+    protected void setIndex(int index, char value) {
+        field[index] = value;
+    }
+
     public void setXY(int x, int y, char value) {
         field[x * 3 + y] = value;
+    }
+
+    public List<Integer> getEmptyCells() {
+        return IntStream.range(0, field.length)
+                .filter(i -> field[i] == '_')
+                .boxed()
+                .collect(Collectors.toList());
     }
 }
 
@@ -163,7 +176,7 @@ class Person extends User {
     Coordinates findMove(TicTacToeField board) {
         System.out.println("Enter the coordinates: ");
         Scanner sc = new Scanner(System.in);
-        String text = "";
+        String text;
         try {
             text = sc.nextLine().trim();
             if (text.equals("exit")) {
@@ -201,7 +214,7 @@ class AIUser extends User {
     }
 
     Coordinates findRandomCoordinates(TicTacToeField board) {
-        int x = 0, y = 0;
+        int x, y;
         Random r = new Random();
         do {
             x = r.nextInt(3);
@@ -224,8 +237,7 @@ class EasyLevel extends AIUser {
     @Override
     Coordinates findMove(TicTacToeField board) {
         System.out.println("Making move level \"easy\"");
-        Coordinates coordinates = findRandomCoordinates(board);
-        return coordinates;
+        return findRandomCoordinates(board);
     }
 }
 
@@ -238,10 +250,10 @@ class MediumLevel extends AIUser {
     Coordinates findMove(TicTacToeField board) {
         System.out.println("Making move level \"medium\"");
         // can I win
-        TicTacToeField copy = board.copy();
+        TicTacToeField copy;
         for (int i = 0; i < 9; i++) {
             copy = board.copy();
-            if (copy.field[i] == '_') {
+            if (copy.isXYAvailable(i / 3, i % 3)) {
                 copy.setXY(i / 3, i % 3, value);
                 if (copy.wins(value)) {
                     return new Coordinates(i / 3, i % 3);
@@ -252,7 +264,7 @@ class MediumLevel extends AIUser {
         // can the opponent win
         for (int i = 0; i < 9; i++) {
             copy = board.copy();
-            if (copy.field[i] == '_') {
+            if (copy.isXYAvailable(i / 3, i % 3)) {
                 copy.setXY(i / 3, i % 3, value == 'O' ? 'X' : 'O');
                 if (copy.wins(value == 'O' ? 'X' : 'O')) {
                     return new Coordinates(i / 3, i % 3);
@@ -262,6 +274,72 @@ class MediumLevel extends AIUser {
 
         return findRandomCoordinates(board);
     }
+}
+
+class HardLevel extends AIUser {
+
+    HardLevel(char value) {
+        super(value);
+        player = value;
+        opponent = player == 'X' ? 'O' : 'X';
+        choiceIndex = -1;
+    }
+
+    char player;
+    char opponent;
+    int choiceIndex;
+
+    @Override
+    Coordinates findMove(TicTacToeField board) {
+        System.out.println("Making move level \"hard\"");
+        minMax(board, 0, player);
+        return new Coordinates(choiceIndex / 3, choiceIndex % 3);
+    }
+
+    private int calculateScore(TicTacToeField board, int depth) {
+        if (board.wins(player))
+            return 10 - depth;
+        if (board.wins(opponent))
+            return depth - 10;
+        return 0;
+    }
+
+    private int minMax(TicTacToeField board, int depth, char user) {
+        if (board.hasEnded(false))
+            return calculateScore(board, depth);
+        depth++;
+        List<Integer> empty = board.getEmptyCells();
+        int[] scores = new int[empty.size()];
+        // populate scores
+        int idx = 0;
+        for (int i: empty) {
+            TicTacToeField aux = board.copy();
+            aux.setIndex(i, user);
+            scores[idx++] = minMax(aux, depth, user == player ? opponent : player);
+        }
+        // do max - maximize my win
+        if (user == player) {
+            int maxIdx = 0;
+            for (int i = 1; i < scores.length; i++) {
+                if (scores[i] > scores[maxIdx]){
+                    maxIdx = i;
+                }
+            }
+            choiceIndex = empty.get(maxIdx);
+            return scores[maxIdx];
+        } else { // do min - minimize my loss
+            int minIdx = 0;
+            for (int i = 1; i < scores.length; i++) {
+                if (scores[i] < scores[minIdx]) {
+                    minIdx = i;
+                }
+            }
+            choiceIndex = empty.get(minIdx);
+            return scores[minIdx];
+        }
+    }
+
+
 }
 
 class GameArbiter {
@@ -287,7 +365,7 @@ class GameArbiter {
 }
 
 class GameWithMenu {
-    static Set<String> users = new HashSet<String>(Arrays.asList("user", "easy", "medium"));
+    static Set<String> users = new HashSet<>(Arrays.asList("user", "easy", "medium", "hard"));
     GameArbiter ga;
 
     protected void createMenu() {
@@ -304,6 +382,7 @@ class GameWithMenu {
             // all parameters are correct
             TicTacToeField board = new TicTacToeField();
             board.printField();
+
             User user1 = setUser(command[1], 'X');
             User user2 = setUser(command[2], 'O');
             this.ga = new GameArbiter(board, user1, user2);
@@ -319,13 +398,15 @@ class GameWithMenu {
                 return new EasyLevel(value);
             case 'm':
                 return new MediumLevel(value);
+            case 'h':
+                return new HardLevel(value);
             default:
                 throw new IllegalStateException("Unexpected value for user: " + x);
         }
     }
 
     private void playGame() {
-        while (!ga.board.hasEnded()) {
+        while (!ga.board.hasEnded(true)) {
             ga.makeMove();
             ga.board.printField();
             ga.changeUser();
